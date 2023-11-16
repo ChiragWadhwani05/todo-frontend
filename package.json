@@ -1,13 +1,31 @@
 {
   "name": "todo-frontend",
   "version": "0.1.0",
-  "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ChiragWadhwani05/todo-frontend.git",
+    "todo-backend": "git+https://github.com/LakshayManglani/todo-backend.git"
+  },
+  "keywords": [
+    "todo",
+    "frontend",
+    "nextjs"
+  ],
+  "author": "Chirag Wadhwani",
+  "contributors": [
+    "Lakshay Manglani"
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ChiragWadhwani05/todo-frontend/issues"
+  },
+  "homepage": "https://github.com/ChiragWadhwani05/todo-backend#readme",
   "dependencies": {
     "react": "^18",
     "react-dom": "^18",
