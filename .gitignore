@@ -15,7 +15,6 @@
 
 # production
 /build
-/notes
 
 # misc
 .DS_Store
@@ -27,7 +26,6 @@ yarn-debug.log*
 yarn-error.log*
 
 # local env files
-package-lock.json
 .env*.local
 
 # vercel
@@ -36,3 +34,12 @@ package-lock.json
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+
+# Custom Ignores
+
+# Folders to ignore
+/notes
+
+# Files to ignore
+package-lock.json
