@@ -19,6 +19,25 @@ a {
   text-decoration: none;
 }
 
+/* Links */
+.link {
+  width: 100%;
+  color: white;
+  text-align: center;
+  padding: 0.7rem;
+  border-radius: 0.3rem;
+  font-size: larger;
+  font-weight: 300;
+}
+
+.link--background {
+  background-color: rebeccapurple;
+}
+
+.link--border {
+  border: 0.2rem solid rebeccapurple;
+}
+
 @media (prefers-color-scheme: dark) {
   html {
     color-scheme: dark;
