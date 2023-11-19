@@ -1,7 +1,7 @@
 <div align="center">
-    <img src="./public/todo-logo-circle.png"
+    <img src="./public/todo-logo-frontend-tp.png"
     width="200">
-    <h1 align="center">Todo Backend</h1>
+    <h1 align="center">Todo Frontend</h1>
 </div>
 Welcome to Todo Frontend! This frontend allows you to manage your todos.
 
