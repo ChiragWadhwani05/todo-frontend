@@ -43,3 +43,9 @@ next-env.d.ts
 
 # Files to ignore
 package-lock.json
+
+# test folders to ignore
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
