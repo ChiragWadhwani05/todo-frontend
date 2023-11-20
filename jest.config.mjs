@@ -11,6 +11,10 @@ const config = {
   // Add more setup options before each test is run
   // setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
 
+  // The glob patterns Jest uses to detect test files
+  testMatch: ["**/__tests__/**/*.[jt]s?(x)", "**/?(*.)+(test).[tj]s?(x)"],
+  collectCoverage: true,
+  coverageDirectory: "./coverage",
   testEnvironment: "jest-environment-jsdom",
 };
 
