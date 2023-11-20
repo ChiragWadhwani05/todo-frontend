@@ -1,3 +1,10 @@
+<<<<<<< HEAD
+=======
+# Ignore artifacts:
+build
+coverage
+
+>>>>>>> f171fce9c4f8316503df4ceea3952e7b510cdfc1
 /node_modules
 
 *.env

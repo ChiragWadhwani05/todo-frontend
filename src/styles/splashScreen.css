@@ -1,0 +1,16 @@
+#splash-screen-container {
+  margin: 0 auto;
+  height: 100%;
+  width: 100%;
+  padding: 4rem 2rem;
+  background-color: rgb(35, 35, 35);
+  position: absolute;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+#splash-screen-container {
+  text-align: center;
+}

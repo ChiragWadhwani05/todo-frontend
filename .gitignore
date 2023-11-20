@@ -36,3 +36,18 @@ package-lock.json
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+
+# Custom Ignores
+
+# Folders to ignore
+/notes
+
+# Files to ignore
+package-lock.json
+
+# test folders to ignore
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
