@@ -1,9 +1,11 @@
 import {BrowserRouter, Routes, Route} from 'react-router-dom';
-import Login from './components/Login';
+
 import {createTheme, ThemeProvider} from '@mui/material';
 import CssBaseline from '@mui/material/CssBaseline'; // Import CssBaseline for consistent styling
 import {purple} from '@mui/material/colors';
-import Register from './components/Register';
+import Login from './features/auth/Login';
+import Register from './features/auth/Register';
+import Home from './components/Home';
 
 const lightTheme = createTheme({
   palette: {
@@ -100,6 +102,7 @@ function App() {
       <CssBaseline />
       <BrowserRouter>
         <Routes>
+          <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
         </Routes>

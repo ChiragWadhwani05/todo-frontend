@@ -11,15 +11,39 @@ import {Link} from '@mui/material';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import {FcGoogle} from 'react-icons/fc';
+import {useDispatch} from 'react-redux';
+import {setUser} from './userSlice';
+import {useNavigate} from 'react-router-dom';
 
 function Login() {
-  const handleSubmit = event => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const handleSubmit = async event => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
+
+    const res = await (
+      await fetch(
+        'https://todo-backend-production-1fc6.up.railway.app/api/v1/users/login',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            email: data.get('email'),
+            password: data.get('password'),
+          }),
+        },
+      )
+    ).json();
+    console.log(res);
+
+    if (!res.success) return;
+
+    dispatch(setUser({...res.data, isLoggedIn: true}));
+    navigate('/');
   };
 
   const [showPassword, setShowPassword] = useState(false);
