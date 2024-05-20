@@ -1,27 +1,49 @@
-import { useState } from 'react';
+import {useState} from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
-import { TextField, InputAdornment, IconButton, Divider } from '@mui/material';
+import {TextField, InputAdornment, IconButton, Divider} from '@mui/material';
 import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import { Link } from '@mui/material';
+import {Link} from '@mui/material';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import { FcGoogle } from 'react-icons/fc';
+import {FcGoogle} from 'react-icons/fc';
+import {useDispatch} from 'react-redux';
+import {setUser} from './userSlice';
+import {useNavigate} from 'react-router-dom';
 
-// TODO remove, this demo shouldn't need to reset the theme.
+function Login() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-function SignIn() {
-  const handleSubmit = (event) => {
+  const handleSubmit = async event => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
+
+    const res = await (
+      await fetch(
+        'https://todo-backend-production-1fc6.up.railway.app/api/v1/users/login',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            email: data.get('email'),
+            password: data.get('password'),
+          }),
+        },
+      )
+    ).json();
+    console.log(res);
+
+    if (!res.success) return;
+
+    dispatch(setUser({...res.data, isLoggedIn: true}));
+    navigate('/');
   };
 
   const [showPassword, setShowPassword] = useState(false);
@@ -39,15 +61,14 @@ function SignIn() {
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
-        }}
-      >
-        <Avatar sx={{ m: 1, bgcolor: 'primary.main' }}>
-          <LockOutlinedIcon sx={{ color: 'primary.contrastText' }} />
+        }}>
+        <Avatar sx={{m: 1, bgcolor: 'primary.main'}}>
+          <LockOutlinedIcon sx={{color: 'primary.contrastText'}} />
         </Avatar>
         <Typography component="h1" variant="h5">
-          Sign in
+          Login
         </Typography>
-        <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+        <Box component="form" onSubmit={handleSubmit} noValidate sx={{mt: 1}}>
           <TextField
             margin="normal"
             required
@@ -81,8 +102,7 @@ function SignIn() {
             type="submit"
             fullWidth
             variant="contained"
-            sx={{ mt: 3, mb: 4 }}
-          >
+            sx={{mt: 3, mb: 4}}>
             Sign In
           </Button>
 
@@ -97,16 +117,15 @@ function SignIn() {
               mt: 4,
               mb: 2,
               gap: 2,
-            }}
-          >
+            }}>
             <FcGoogle size={20} />
             Continue with Google
           </Button>
         </Box>
         <Typography component="h1" variant="body1">
           {"Don't have an account? "}
-          <Link href="/signup" variant="body1">
-            {'Sign Up'}
+          <Link href="/register" variant="body1">
+            {'Register'}
           </Link>
         </Typography>
       </Box>
@@ -114,4 +133,4 @@ function SignIn() {
   );
 }
 
-export default SignIn;
+export default Login;
