@@ -1,21 +1,20 @@
-import { useState } from 'react';
+import {useState} from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
-import { TextField, InputAdornment, IconButton, Divider } from '@mui/material';
+import {TextField, InputAdornment, IconButton, Divider} from '@mui/material';
 import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import { Link } from '@mui/material';
+import {Link} from '@mui/material';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import { FcGoogle } from 'react-icons/fc';
-import { Grid } from '@mui/material';
-// TODO remove, this demo shouldn't need to reset the theme.
+import {FcGoogle} from 'react-icons/fc';
+import {Grid} from '@mui/material';
 
-export default function SignUp() {
-  const handleSubmit = (event) => {
+export default function Register() {
+  const handleSubmit = event => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     console.log({
@@ -39,16 +38,14 @@ export default function SignUp() {
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
-        }}
-      >
-        <Avatar sx={{ m: 1, bgcolor: 'primary.main' }}>
-          <LockOutlinedIcon sx={{ color: 'primary.contrastText' }} />
+        }}>
+        <Avatar sx={{m: 1, bgcolor: 'primary.main'}}>
+          <LockOutlinedIcon sx={{color: 'primary.contrastText'}} />
         </Avatar>
         <Typography component="h1" variant="h5">
-          Sign up
+          Register
         </Typography>
-        <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
-          {/* Autocomplete fullname */}
+        <Box component="form" onSubmit={handleSubmit} noValidate sx={{mt: 1}}>
           <Grid container spacing={1} columns={12}>
             <Grid item xs={6}>
               <TextField
@@ -114,9 +111,8 @@ export default function SignUp() {
             type="submit"
             fullWidth
             variant="contained"
-            sx={{ mt: 3, mb: 4 }}
-          >
-            Sign In
+            sx={{mt: 3, mb: 4}}>
+            Register
           </Button>
 
           <Divider>OR</Divider>
@@ -130,16 +126,15 @@ export default function SignUp() {
               mt: 4,
               mb: 2,
               gap: 2,
-            }}
-          >
+            }}>
             <FcGoogle size={20} />
             Continue with Google
           </Button>
         </Box>
         <Typography component="h1" variant="body1">
           {'Already have an account? '}
-          <Link href="/signin" variant="body1">
-            {'Sign In'}
+          <Link href="/login" variant="body1">
+            {'Login'}
           </Link>
         </Typography>
       </Box>
