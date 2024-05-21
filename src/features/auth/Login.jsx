@@ -14,31 +14,21 @@ import {FcGoogle} from 'react-icons/fc';
 import {useDispatch} from 'react-redux';
 import {setUser} from './userSlice';
 import {useNavigate} from 'react-router-dom';
+import {useLoginMutation} from './userApiSlice';
 
 function Login() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [login] = useLoginMutation();
 
   const handleSubmit = async event => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
+    const formData = new FormData(event.currentTarget);
 
-    const res = await (
-      await fetch(
-        'https://todo-backend-production-1fc6.up.railway.app/api/v1/users/login',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            email: data.get('email'),
-            password: data.get('password'),
-          }),
-        },
-      )
-    ).json();
-    console.log(res);
+    const res = await login({
+      email: formData.get('email'),
+      password: formData.get('password'),
+    }).unwrap();
 
     if (!res.success) return;
 
