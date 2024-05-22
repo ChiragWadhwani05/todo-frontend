@@ -9,6 +9,7 @@ const initialState = {
   authorizationToken: null,
   avatar: null,
   isLoggedIn: false,
+  password: null,
 };
 
 export const userSlice = createSlice({
@@ -16,25 +17,38 @@ export const userSlice = createSlice({
   initialState,
   reducers: {
     setUser: (state, action) => {
-      const {
-        _id,
-        username,
-        email,
-        givenName,
-        familyName,
-        authorizationToken,
-        avatar,
-        isLoggedIn,
-      } = action.payload;
+      if (action.payload.email) {
+        state.email = action.payload.email;
+      }
+      if (action.payload.givenName) {
+        state.givenName = action.payload.givenName;
+      }
+      if (action.payload.familyName) {
+        state.familyName = action.payload.familyName;
+      }
+      if (action.payload.username) {
+        state.username = action.payload.username;
+      }
+      if (action.payload.avatar) {
+        state.avatar = action.payload.avatar;
+      }
+      if (action.payload.authorizationToken) {
+        state.authorizationToken = action.payload.authorizationToken;
+      }
+      if (action.payload._id) {
+        state._id = action.payload._id;
+      }
+      if (typeof action.payload.isLoggedIn === 'boolean') {
+        state.isLoggedIn = action.payload.isLoggedIn;
+      }
+      if (action.payload.password) {
+        state.password = action.payload.password;
+      }
 
-      state._id = _id;
-      state.username = username;
-      state.email = email;
-      state.givenName = givenName;
-      state.familyName = familyName;
-      state.authorizationToken = authorizationToken;
-      state.avatar = avatar;
-      state.isLoggedIn = isLoggedIn;
+      // Save user to local storage
+      if (state.isLoggedIn) {
+        localStorage.setItem('user', JSON.stringify(state));
+      }
     },
     logout: state => {
       state._id = null;
@@ -45,6 +59,7 @@ export const userSlice = createSlice({
       state.authorizationToken = null;
       state.avatar = null;
       state.isLoggedIn = false;
+      state.password = null;
     },
   },
 });

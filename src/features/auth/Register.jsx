@@ -12,15 +12,38 @@ import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import {FcGoogle} from 'react-icons/fc';
 import {Grid} from '@mui/material';
+import {useDispatch} from 'react-redux';
+import {setUser} from './userSlice';
+import {useNavigate} from 'react-router-dom';
 
 export default function Register() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const handleSubmit = event => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
+    const userToSet = {
+      givenName: data.get('firstName'),
+      familyName: data.get('lastName'),
+      username: data.get('username'),
       email: data.get('email'),
       password: data.get('password'),
-    });
+    };
+
+    dispatch(setUser(userToSet));
+    fetch(
+      'https://todo-backend-production-1fc6.up.railway.app/api/v1/otp/mail/register',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: data.get('email'),
+        }),
+      },
+    );
+    navigate('/otp');
   };
 
   const [showPassword, setShowPassword] = useState(false);

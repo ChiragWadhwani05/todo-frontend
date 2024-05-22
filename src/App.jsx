@@ -6,6 +6,10 @@ import {purple} from '@mui/material/colors';
 import Login from './features/auth/Login';
 import Register from './features/auth/Register';
 import Home from './components/Home';
+import {useDispatch, useSelector} from 'react-redux';
+import {selectUser, setUser} from './features/auth/userSlice';
+import NotFound from './components/NotFound';
+import Otp from './features/auth/Otp';
 
 const lightTheme = createTheme({
   palette: {
@@ -92,6 +96,19 @@ const darkTheme = createTheme({
 });
 
 function App() {
+  const user = useSelector(selectUser);
+  const dispatch = useDispatch();
+
+  if (!user.authorizationToken) {
+    const rawUser = localStorage.getItem('user');
+    if (rawUser) {
+      const decodedUser = JSON.parse(rawUser);
+      if (decodedUser.authorizationToken) {
+        dispatch(setUser(decodedUser));
+      }
+    }
+  }
+
   return (
     <ThemeProvider
       theme={
@@ -103,8 +120,14 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
+          {!user.authorizationToken && (
+            <>
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
+              <Route path="/otp" element={<Otp />} />
+            </>
+          )}
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
     </ThemeProvider>
