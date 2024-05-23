@@ -1,7 +1,7 @@
 import {useSelector} from 'react-redux';
 import {selectCurrentUser} from './authSlice';
-import {Home} from '@mui/icons-material';
 import {Outlet} from 'react-router-dom';
+import Home from '../../components/Home';
 
 const NoAuth = () => {
   const user = useSelector(selectCurrentUser);
