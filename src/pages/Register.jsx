@@ -7,33 +7,42 @@ import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import {Link} from '@mui/material';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import {FcGoogle} from 'react-icons/fc';
-import {useDispatch} from 'react-redux';
-import {setUser} from './userSlice';
+import {Grid} from '@mui/material';
 import {useNavigate} from 'react-router-dom';
-import {useLoginMutation} from './userApiSlice';
+import {useDispatch} from 'react-redux';
+import {setCredentials} from '../features/auth/authSlice';
 
-function Login() {
-  const dispatch = useDispatch();
+export default function Register() {
   const navigate = useNavigate();
-  const [login] = useLoginMutation();
+  const dispatch = useDispatch();
 
   const handleSubmit = async event => {
     event.preventDefault();
-    const formData = new FormData(event.currentTarget);
+    const data = new FormData(event.currentTarget);
+    const userData = Object.fromEntries(data.entries());
+    console.log(userData);
+    await fetch(
+      'https://todo-backend-production-1fc6.up.railway.app/api/v1/otp/mail/register',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({email: userData.email}),
+      },
+    );
 
-    const res = await login({
-      email: formData.get('email'),
-      password: formData.get('password'),
-    }).unwrap();
-
-    if (!res.success) return;
-
-    dispatch(setUser({...res.data, isLoggedIn: true}));
-    navigate('/');
+    dispatch(
+      setCredentials({
+        ...userData,
+        familyName: userData.lastName,
+        givenName: userData.firstName,
+      }),
+    );
+    navigate('/otp');
   };
 
   const [showPassword, setShowPassword] = useState(false);
@@ -47,7 +56,7 @@ function Login() {
       <CssBaseline />
       <Box
         sx={{
-          marginTop: 8,
+          marginTop: 5,
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
@@ -56,9 +65,42 @@ function Login() {
           <LockOutlinedIcon sx={{color: 'primary.contrastText'}} />
         </Avatar>
         <Typography component="h1" variant="h5">
-          Login
+          Register
         </Typography>
         <Box component="form" onSubmit={handleSubmit} noValidate sx={{mt: 1}}>
+          <Grid container spacing={1} columns={12}>
+            <Grid item xs={6}>
+              <TextField
+                margin="normal"
+                required
+                fullWidth
+                id="firstName"
+                label="First Name"
+                name="firstName"
+                autoComplete="given-name"
+                autoFocus
+              />
+            </Grid>
+            <Grid item xs={6}>
+              <TextField
+                margin="normal"
+                required
+                fullWidth
+                id="lastName"
+                label="Last Name"
+                name="lastName"
+              />
+            </Grid>
+          </Grid>
+          <TextField
+            margin="normal"
+            required
+            fullWidth
+            id="username"
+            label="Username"
+            name="username"
+            autoComplete="username"
+          />
           <TextField
             margin="normal"
             required
@@ -67,7 +109,6 @@ function Login() {
             label="Email Address"
             name="email"
             autoComplete="email"
-            autoFocus
           />
           <TextField
             margin="normal"
@@ -93,7 +134,7 @@ function Login() {
             fullWidth
             variant="contained"
             sx={{mt: 3, mb: 4}}>
-            Sign In
+            Register
           </Button>
 
           <Divider>OR</Divider>
@@ -113,14 +154,10 @@ function Login() {
           </Button>
         </Box>
         <Typography component="h1" variant="body1">
-          {"Don't have an account? "}
-          <Link href="/register" variant="body1">
-            {'Register'}
-          </Link>
+          {'Already have an account? '}
+          <Button onClick={() => navigate('/login')}>Login</Button>
         </Typography>
       </Box>
     </Container>
   );
 }
-
-export default Login;

@@ -7,43 +7,41 @@ import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import {Link} from '@mui/material';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import {FcGoogle} from 'react-icons/fc';
-import {Grid} from '@mui/material';
-import {useDispatch} from 'react-redux';
-import {setUser} from './userSlice';
 import {useNavigate} from 'react-router-dom';
+import {useDispatch} from 'react-redux';
+import {setCredentials} from '../features/auth/authSlice';
 
-export default function Register() {
-  const dispatch = useDispatch();
+function Login() {
   const navigate = useNavigate();
-  const handleSubmit = event => {
+  const dispatch = useDispatch();
+  const handleSubmit = async event => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    const userToSet = {
-      givenName: data.get('firstName'),
-      familyName: data.get('lastName'),
-      username: data.get('username'),
-      email: data.get('email'),
-      password: data.get('password'),
-    };
+    const formData = new FormData(event.currentTarget);
 
-    dispatch(setUser(userToSet));
-    fetch(
-      'https://todo-backend-production-1fc6.up.railway.app/api/v1/otp/mail/register',
+    const {email, password} = Object.fromEntries(formData.entries());
+
+    const response = await fetch(
+      'https://todo-backend-production-1fc6.up.railway.app/api/v1/users/login',
       {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          email: data.get('email'),
-        }),
+        body: JSON.stringify({email, password}),
       },
     );
-    navigate('/otp');
+
+    const data = await response.json();
+
+    if (data) {
+      localStorage.setItem('authorizationToken', data.data.authorizationToken);
+      dispatch(setCredentials({...data.data}));
+
+      navigate('/');
+    }
   };
 
   const [showPassword, setShowPassword] = useState(false);
@@ -57,7 +55,7 @@ export default function Register() {
       <CssBaseline />
       <Box
         sx={{
-          marginTop: 5,
+          marginTop: 8,
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
@@ -66,42 +64,9 @@ export default function Register() {
           <LockOutlinedIcon sx={{color: 'primary.contrastText'}} />
         </Avatar>
         <Typography component="h1" variant="h5">
-          Register
+          Login
         </Typography>
         <Box component="form" onSubmit={handleSubmit} noValidate sx={{mt: 1}}>
-          <Grid container spacing={1} columns={12}>
-            <Grid item xs={6}>
-              <TextField
-                margin="normal"
-                required
-                fullWidth
-                id="firstName"
-                label="First Name"
-                name="firstName"
-                autoComplete="given-name"
-                autoFocus
-              />
-            </Grid>
-            <Grid item xs={6}>
-              <TextField
-                margin="normal"
-                required
-                fullWidth
-                id="lastName"
-                label="Last Name"
-                name="lastName"
-              />
-            </Grid>
-          </Grid>
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            id="username"
-            label="Username"
-            name="username"
-            autoComplete="username"
-          />
           <TextField
             margin="normal"
             required
@@ -110,6 +75,7 @@ export default function Register() {
             label="Email Address"
             name="email"
             autoComplete="email"
+            autoFocus
           />
           <TextField
             margin="normal"
@@ -135,7 +101,7 @@ export default function Register() {
             fullWidth
             variant="contained"
             sx={{mt: 3, mb: 4}}>
-            Register
+            Login
           </Button>
 
           <Divider>OR</Divider>
@@ -155,12 +121,13 @@ export default function Register() {
           </Button>
         </Box>
         <Typography component="h1" variant="body1">
-          {'Already have an account? '}
-          <Link href="/login" variant="body1">
-            {'Login'}
-          </Link>
+          {"Don't have an account? "}
+
+          <Button onClick={() => navigate('/register')}>Register</Button>
         </Typography>
       </Box>
     </Container>
   );
 }
+
+export default Login;
