@@ -27,7 +27,7 @@ const useFetchUserData = () => {
             console.log(data);
             dispatch(
               setCredentials({
-                ...data.data.user,
+                ...data.data,
                 authorizationToken,
                 isLoggedIn: true,
               }),
