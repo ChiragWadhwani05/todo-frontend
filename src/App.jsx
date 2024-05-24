@@ -12,6 +12,7 @@ import NotFound from './components/NotFound';
 import NoAuth from './features/auth/NoAuth';
 import useFetchUserData from './hooks/useFetchUserData';
 import Home from './components/Home';
+import Loader from './components/Loader';
 
 const lightTheme = createTheme({
   palette: {
@@ -101,7 +102,7 @@ function App() {
   const loading = useFetchUserData();
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <Loader />;
   }
 
   return (

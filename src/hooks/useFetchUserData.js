@@ -8,6 +8,8 @@ const useFetchUserData = () => {
   const user = useSelector(selectCurrentUser);
   const [loading, setLoading] = useState(true); // Add loading state
   const authorizationToken = localStorage.getItem('authorizationToken');
+  const skip = authorizationToken === null;
+  console.log(skip);
   const {data, error, isLoading} = useSelfQuery(undefined, {
     skip: !authorizationToken,
   });
@@ -26,7 +28,9 @@ const useFetchUserData = () => {
         } else if (error) {
           console.error('Failed to fetch user data: ', error);
         }
+      }
 
+      if (!isLoading) {
         setLoading(false);
       }
     };
