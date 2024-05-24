@@ -14,26 +14,19 @@ import {Grid} from '@mui/material';
 import {useNavigate} from 'react-router-dom';
 import {useDispatch} from 'react-redux';
 import {setCredentials} from '../features/auth/authSlice';
+import {useRegisterOptMutation} from '../api/auth/authApiSlice';
 
 export default function Register() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [registerOtp] = useRegisterOptMutation();
 
   const handleSubmit = async event => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     const userData = Object.fromEntries(data.entries());
-    console.log(userData);
-    await fetch(
-      'https://todo-backend-production-1fc6.up.railway.app/api/v1/otp/mail/register',
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({email: userData.email}),
-      },
-    );
+
+    registerOtp(userData);
 
     dispatch(
       setCredentials({

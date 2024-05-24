@@ -11,6 +11,7 @@ import {
 import {useNavigate} from 'react-router-dom';
 import {useDispatch, useSelector} from 'react-redux';
 import {selectCurrentUser, setCredentials} from '../features/auth/authSlice';
+import {useRegisterMutation} from '../api/auth/authApiSlice';
 
 const OtpPage = () => {
   const [otp, setOtp] = useState(new Array(6).fill(''));
@@ -18,6 +19,7 @@ const OtpPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const user = useSelector(selectCurrentUser);
+  const [register, {isLoading}] = useRegisterMutation();
 
   const handleChange = (element, index) => {
     if (isNaN(element.value)) return;
@@ -41,25 +43,14 @@ const OtpPage = () => {
     try {
       const {email, password, username, givenName, familyName} = user;
 
-      const response = await fetch(
-        'https://todo-backend-production-1fc6.up.railway.app/api/v1/users/register',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            email,
-            password,
-            username,
-            givenName,
-            familyName,
-            otp: parseInt(otp.join('')),
-          }),
-        },
-      );
-
-      const data = await response.json();
+      const data = await register({
+        email,
+        password,
+        username,
+        givenName,
+        familyName,
+        otp: parseInt(otp.join('')),
+      });
 
       if (data) {
         localStorage.setItem(
@@ -74,6 +65,10 @@ const OtpPage = () => {
       console.error('Failed to register: ', err);
     }
   };
+
+  if (isLoading) {
+    return 'Loading...';
+  }
 
   return (
     <Container maxWidth="sm">

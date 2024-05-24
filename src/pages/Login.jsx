@@ -13,28 +13,20 @@ import {FcGoogle} from 'react-icons/fc';
 import {useNavigate} from 'react-router-dom';
 import {useDispatch} from 'react-redux';
 import {setCredentials} from '../features/auth/authSlice';
+import {useLoginMutation} from '../api/auth/authApiSlice';
 
 function Login() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [login, {isLoading}] = useLoginMutation();
+
   const handleSubmit = async event => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
 
     const {email, password} = Object.fromEntries(formData.entries());
 
-    const response = await fetch(
-      'https://todo-backend-production-1fc6.up.railway.app/api/v1/users/login',
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({email, password}),
-      },
-    );
-
-    const data = await response.json();
+    const data = await login({email, password}).unwrap();
 
     if (data) {
       localStorage.setItem('authorizationToken', data.data.authorizationToken);
@@ -49,6 +41,10 @@ function Login() {
   const togglePasswordHide = () => {
     setShowPassword(!showPassword);
   };
+
+  if (isLoading) {
+    return 'Loading...';
+  }
 
   return (
     <Container component="main" maxWidth="xs">
