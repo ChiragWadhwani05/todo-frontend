@@ -1,15 +1,18 @@
-import {BrowserRouter, Routes, Route} from 'react-router-dom';
+import {Routes, Route} from 'react-router-dom';
 
 import {createTheme, ThemeProvider} from '@mui/material';
 import CssBaseline from '@mui/material/CssBaseline'; // Import CssBaseline for consistent styling
 import {purple} from '@mui/material/colors';
-import Login from './features/auth/Login';
-import Register from './features/auth/Register';
-import Home from './components/Home';
-import {useDispatch, useSelector} from 'react-redux';
-import {selectUser, setUser} from './features/auth/userSlice';
+import Login from './pages/Login';
+import Register from './pages/Register';
+import Otp from './pages/Otp';
+import Layout from './components/Layout';
+import RequireAuth from './features/auth/RequireAuth';
 import NotFound from './components/NotFound';
-import Otp from './features/auth/Otp';
+import NoAuth from './features/auth/NoAuth';
+import useFetchUserData from './hooks/useFetchUserData';
+import Home from './components/Home';
+import Loader from './components/Loader';
 
 const lightTheme = createTheme({
   palette: {
@@ -96,17 +99,10 @@ const darkTheme = createTheme({
 });
 
 function App() {
-  const user = useSelector(selectUser);
-  const dispatch = useDispatch();
+  const loading = useFetchUserData();
 
-  if (!user.authorizationToken) {
-    const rawUser = localStorage.getItem('user');
-    if (rawUser) {
-      const decodedUser = JSON.parse(rawUser);
-      if (decodedUser.authorizationToken) {
-        dispatch(setUser(decodedUser));
-      }
-    }
+  if (loading) {
+    return <Loader />;
   }
 
   return (
@@ -117,19 +113,24 @@ function App() {
           : lightTheme
       }>
       <CssBaseline />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          {!user.authorizationToken && (
-            <>
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
-              <Route path="/otp" element={<Otp />} />
-            </>
-          )}
+
+      <Routes>
+        <Route path="/" element={<Layout />}>
+          {/* public routes */}
+          <Route element={<NoAuth />}>
+            <Route path="login" element={<Login />} />
+            <Route path="register" element={<Register />} />
+            <Route path="otp" element={<Otp />} />
+          </Route>
+
+          {/* protected routes */}
+          <Route element={<RequireAuth />}>
+            <Route path="/" element={<Home />} />
+          </Route>
+
           <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
+        </Route>
+      </Routes>
     </ThemeProvider>
   );
 }

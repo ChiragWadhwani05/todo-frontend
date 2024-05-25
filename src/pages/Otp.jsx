@@ -1,5 +1,5 @@
 // src/OtpPage.js
-import {useState, useRef, useEffect} from 'react';
+import {useState, useRef} from 'react';
 import {
   Container,
   Box,
@@ -8,22 +8,18 @@ import {
   Button,
   Grid,
 } from '@mui/material';
-import {useDispatch, useSelector} from 'react-redux';
-import {selectUser, setUser} from './userSlice';
 import {useNavigate} from 'react-router-dom';
+import {useDispatch, useSelector} from 'react-redux';
+import {selectCurrentUser, setCredentials} from '../features/auth/authSlice';
+import {useRegisterMutation} from '../api/auth/authApiSlice';
 
 const OtpPage = () => {
   const [otp, setOtp] = useState(new Array(6).fill(''));
   const inputRefs = useRef([]);
-  const user = useSelector(selectUser);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
-  useEffect(() => {
-    if (!user.password) {
-      navigate('/register');
-    }
-  }, [navigate, user.password]);
+  const user = useSelector(selectCurrentUser);
+  const [register, {isLoading}] = useRegisterMutation();
 
   const handleChange = (element, index) => {
     if (isNaN(element.value)) return;
@@ -44,27 +40,35 @@ const OtpPage = () => {
 
   const handleSubmit = async e => {
     e.preventDefault();
-    alert('Entered OTP is ' + otp.join(''));
+    try {
+      const {email, password, username, givenName, familyName} = user;
 
-    const res = await (
-      await fetch(
-        'https://todo-backend-production-1fc6.up.railway.app/api/v1/users/register',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({...user, otp: Number(otp.join(''))}),
-        },
-      )
-    ).json();
-    console.log(res);
+      const data = await register({
+        email,
+        password,
+        username,
+        givenName,
+        familyName,
+        otp: parseInt(otp.join('')),
+      });
 
-    if (!res.success) return;
+      if (data) {
+        localStorage.setItem(
+          'authorizationToken',
+          data.data.authorizationToken,
+        );
+        dispatch(setCredentials({...data.data, password: null}));
 
-    dispatch(setUser({...res.data, isLoggedIn: true}));
-    navigate('/');
+        navigate('/');
+      }
+    } catch (err) {
+      console.error('Failed to register: ', err);
+    }
   };
+
+  if (isLoading) {
+    return 'Loading...';
+  }
 
   return (
     <Container maxWidth="sm">
@@ -79,7 +83,7 @@ const OtpPage = () => {
           Enter OTP
         </Typography>
         <Typography variant="subtitle1" gutterBottom>
-          We have sent you a One Time Password to your email({user.email}).
+          We have sent you a One Time Password to your email.
         </Typography>
         <Box component="form" onSubmit={handleSubmit} sx={{mt: 3}}>
           <Grid container spacing={2}>
