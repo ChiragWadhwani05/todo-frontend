@@ -8,8 +8,6 @@ const useFetchUserData = () => {
   const user = useSelector(selectCurrentUser);
   const [loading, setLoading] = useState(true); // Add loading state
   const authorizationToken = localStorage.getItem('authorizationToken');
-  const skip = authorizationToken === null;
-  console.log(skip);
   const {data, error, isLoading} = useSelfQuery(undefined, {
     skip: !authorizationToken,
   });

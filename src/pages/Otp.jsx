@@ -12,6 +12,7 @@ import {useNavigate} from 'react-router-dom';
 import {useDispatch, useSelector} from 'react-redux';
 import {selectCurrentUser, setCredentials} from '../features/auth/authSlice';
 import {useRegisterMutation} from '../api/auth/authApiSlice';
+import Loader from '../components/Loader';
 
 const OtpPage = () => {
   const [otp, setOtp] = useState(new Array(6).fill(''));
@@ -67,7 +68,7 @@ const OtpPage = () => {
   };
 
   if (isLoading) {
-    return 'Loading...';
+    return <Loader />;
   }
 
   return (

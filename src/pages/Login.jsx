@@ -14,6 +14,7 @@ import {useNavigate} from 'react-router-dom';
 import {useDispatch} from 'react-redux';
 import {setCredentials} from '../features/auth/authSlice';
 import {useLoginMutation} from '../api/auth/authApiSlice';
+import Loader from '../components/Loader';
 
 function Login() {
   const navigate = useNavigate();
@@ -43,7 +44,7 @@ function Login() {
   };
 
   if (isLoading) {
-    return 'Loading...';
+    return <Loader />;
   }
 
   return (
