@@ -32,4 +32,4 @@ export const {logout, setCredentials} = authSlice.actions;
 
 export const selectCurrentUser = state => state.auth;
 
-export default authSlice.reducer;
+export const authReducer = authSlice.reducer;

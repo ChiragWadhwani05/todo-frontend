@@ -9,9 +9,14 @@ import NoAuth from './features/auth/NoAuth';
 import useFetchUserData from './hooks/useFetchUserData';
 import Home from './components/Home';
 import Loader from './components/Loader';
+import {useGetTodosQuery} from './api/auth/todoApiSlice';
+import {selectCurrentUser} from './features/auth/authSlice';
+import {useSelector} from 'react-redux';
 
 function App() {
   const loading = useFetchUserData();
+  const user = useSelector(selectCurrentUser);
+  useGetTodosQuery(undefined, {skip: !loading && !user.authorizationToken});
 
   if (loading) {
     return <Loader />;
