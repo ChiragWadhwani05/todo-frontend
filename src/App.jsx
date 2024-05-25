@@ -16,7 +16,7 @@ import {useSelector} from 'react-redux';
 function App() {
   const loading = useFetchUserData();
   const user = useSelector(selectCurrentUser);
-  useGetTodosQuery(undefined, {skip: !loading && !user.authorizationToken});
+  useGetTodosQuery(undefined, {skip: loading || !user.authorizationToken});
 
   if (loading) {
     return <Loader />;
