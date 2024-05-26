@@ -2,16 +2,16 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App.jsx';
 import './index.css';
-import {store} from './app/store';
-import {Provider} from 'react-redux';
-import {BrowserRouter, Route, Routes} from 'react-router-dom';
-import {createTheme, CssBaseline, ThemeProvider} from '@mui/material';
-import {purple} from '@mui/material/colors';
+import { store } from './app/store';
+import { Provider } from 'react-redux';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { createTheme, CssBaseline, ThemeProvider } from '@mui/material';
+import { green } from '@mui/material/colors';
 
 const lightTheme = createTheme({
   palette: {
     mode: 'light',
-    primary: purple,
+    primary: green,
     secondary: {
       main: '#757575',
       contrastText: '#ffffff',
@@ -53,7 +53,7 @@ const lightTheme = createTheme({
 const darkTheme = createTheme({
   palette: {
     mode: 'dark',
-    primary: purple,
+    primary: green,
     secondary: {
       main: '#8687E780',
       contrastText: '#ffffff',
@@ -100,7 +100,8 @@ ReactDOM.createRoot(document.getElementById('root')).render(
           window.matchMedia('(prefers-color-scheme: dark)').matches
             ? darkTheme
             : lightTheme
-        }>
+        }
+      >
         <CssBaseline />
         <BrowserRouter>
           <Routes>
@@ -109,5 +110,5 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         </BrowserRouter>
       </ThemeProvider>
     </Provider>
-  </React.StrictMode>,
+  </React.StrictMode>
 );
