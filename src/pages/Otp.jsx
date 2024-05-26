@@ -1,5 +1,5 @@
 // src/OtpPage.js
-import {useState, useRef} from 'react';
+import {useState, useRef, useEffect} from 'react';
 import {
   Container,
   Box,
@@ -21,6 +21,12 @@ const OtpPage = () => {
   const dispatch = useDispatch();
   const user = useSelector(selectCurrentUser);
   const [register, {isLoading}] = useRegisterMutation();
+
+  useEffect(() => {
+    if (!user.email) {
+      navigate('/register');
+    }
+  });
 
   const handleChange = (element, index) => {
     if (isNaN(element.value)) return;

@@ -6,19 +6,22 @@ import Layout from './components/Layout';
 import RequireAuth from './features/auth/RequireAuth';
 import NotFound from './components/NotFound';
 import NoAuth from './features/auth/NoAuth';
-import useFetchUserData from './hooks/useFetchUserData';
 import Home from './components/Home';
 import Loader from './components/Loader';
 import {useGetTodosQuery} from './api/auth/todoApiSlice';
 import {selectCurrentUser} from './features/auth/authSlice';
 import {useSelector} from 'react-redux';
+import {useSelfQuery} from './api/auth/authApiSlice';
 
 function App() {
-  const loading = useFetchUserData();
+  const authorizationToken = localStorage.getItem('authorizationToken');
+  const {isLoading} = useSelfQuery(undefined, {
+    skip: !authorizationToken,
+  });
   const user = useSelector(selectCurrentUser);
-  useGetTodosQuery(undefined, {skip: loading || !user.authorizationToken});
+  useGetTodosQuery(undefined, {skip: isLoading || !user.authorizationToken});
 
-  if (loading) {
+  if (isLoading) {
     return <Loader />;
   }
 

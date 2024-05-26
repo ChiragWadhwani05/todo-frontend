@@ -1,3 +1,4 @@
+import {logout, setCredentials} from '../../features/auth/authSlice';
 import {apiSlice} from '../apiSlice';
 
 export const authApiSlice = apiSlice.injectEndpoints({
@@ -28,6 +29,22 @@ export const authApiSlice = apiSlice.injectEndpoints({
         url: '/users',
         method: 'GET',
       }),
+      onQueryStarted: async (_, {dispatch, queryFulfilled}) => {
+        try {
+          const {data} = await queryFulfilled;
+
+          dispatch(
+            setCredentials({
+              ...data.data,
+              authorizationToken: localStorage.getItem('authorizationToken'),
+              isLoggedIn: true,
+            }),
+          );
+        } catch (error) {
+          dispatch(logout());
+          console.error('Failed to fetch user data: ', error);
+        }
+      },
     }),
   }),
 });
