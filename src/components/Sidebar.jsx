@@ -1,6 +1,5 @@
 import React from 'react';
 import {
-  Drawer,
   Avatar,
   IconButton,
   Box,
@@ -10,22 +9,21 @@ import {
   ListItem,
   ListItemIcon,
   ListItemText,
+  ListItemButton,
+  Checkbox,
+  Container,
 } from '@mui/material';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import ContrastOutlinedIcon from '@mui/icons-material/ContrastOutlined';
-import ListItemButton from '@mui/material/ListItemButton';
-import Checkbox from '@mui/material/Checkbox';
 import DeleteIcon from '@mui/icons-material/Delete';
-import {useDispatch, useSelector} from 'react-redux';
-import {selectCurrentUser} from '../features/auth/authSlice';
-import {toggleProfileDialog} from '../features/misc/dialogs';
-import {selectAllTodo} from '../features/todos/todosSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectCurrentUser } from '../features/auth/authSlice';
 import {
-  useCreateTodoMutation,
-  useDeleteTodoMutation,
-} from '../api/auth/todoApiSlice';
-
-const drawerWidth = 300;
+  toggleAddTaskDialog,
+  toggleProfileDialog,
+} from '../features/misc/dialogs';
+import { selectAllTodo } from '../features/todos/todosSlice';
+import { useDeleteTodoMutation } from '../api/auth/todoApiSlice';
 
 function stringToColor(string) {
   let hash = 0;
@@ -58,11 +56,10 @@ const Sidebar = () => {
   const user = useSelector(selectCurrentUser);
   const [checked, setChecked] = React.useState([0]);
   const todos = useSelector(selectAllTodo);
-  const [createTodo, {isLoading}] = useCreateTodoMutation();
   const [deleteTodo] = useDeleteTodoMutation();
   const [todosToDelete, setTodosToDelete] = React.useState(new Set());
 
-  const handleToggle = value => () => {
+  const handleToggle = (value) => () => {
     const currentIndex = checked.indexOf(value);
     const newChecked = [...checked];
 
@@ -74,24 +71,32 @@ const Sidebar = () => {
 
     setChecked(newChecked);
   };
+
   const dispatch = useDispatch();
   const handleProfileClick = () => {
     dispatch(toggleProfileDialog());
   };
 
+  const handleAddTask = () => {
+    dispatch(toggleAddTaskDialog());
+  };
+
   return (
-    <Drawer
+    <Container
       sx={{
-        width: drawerWidth,
-        flexShrink: 0,
-        '& .MuiDrawer-paper': {
-          width: drawerWidth,
-          boxSizing: 'border-box',
-        },
+        width: 350,
+        height: '95dvh',
+        display: 'flex',
+        flexDirection: 'column',
       }}
-      variant="permanent"
-      anchor="left">
-      <Box sx={{p: 2, display: 'flex', alignItems: 'center'}}>
+    >
+      <Box
+        sx={{
+          p: 2,
+          display: 'flex',
+          alignItems: 'center',
+        }}
+      >
         <Button
           sx={{
             display: 'flex',
@@ -99,43 +104,45 @@ const Sidebar = () => {
             cursor: 'pointer',
             textTransform: 'none',
           }}
-          onClick={handleProfileClick}>
+          onClick={handleProfileClick}
+        >
           {user.avatar ? (
-            <Avatar src={user.avatar} sx={{width: 30, height: 30, mr: 1}} />
+            <Avatar src={user.avatar} sx={{ width: 30, height: 30, mr: 1 }} />
           ) : (
             <Avatar
               {...stringAvatar(
-                `${user.givenName} ${user.familyName ? user.familyName : ''}`,
+                `${user.givenName} ${user.familyName ? user.familyName : ''}`
               )}
-              sx={{width: 30, height: 30, mr: 1}}
+              sx={{ width: 30, height: 30, mr: 1 }}
             />
           )}
-          <Typography variant="h6" component="div" sx={{color: '#FFFFFF'}}>
+          <Typography variant="h6" component="div" sx={{ color: '#FFFFFF' }}>
             {user.givenName} {user.familyName}
           </Typography>
         </Button>
-        <IconButton sx={{marginLeft: 'auto'}}>
+        <IconButton sx={{ marginLeft: 'auto' }}>
           <ContrastOutlinedIcon />
         </IconButton>
       </Box>
 
-      <Box sx={{p: 2}}>
+      <Box sx={{ p: 2 }}>
         <Button
           startIcon={<AddCircleIcon />}
-          sx={{width: '100%', textTransform: 'none'}}
-          onClick={async () =>
-            await createTodo({title: 'New Task', description: 'desc'})
-          }
-          disabled={isLoading}>
+          sx={{ width: '100%', textTransform: 'none' }}
+          onClick={handleAddTask}
+        >
           <Typography variant="body1" fontWeight={700}>
             Add Task
           </Typography>
         </Button>
       </Box>
 
-      <Box>
-        <List sx={{width: '100%', maxWidth: 360, bgcolor: 'background.paper'}}>
-          {Object.values(todos).map(todo => {
+      <Box sx={{ flexGrow: 1, overflowY: 'auto' }}>
+        <Typography variant="body1" fontWeight={700} sx={{ p: 2 }}>
+          My Tasks
+        </Typography>
+        <List sx={{ width: '100%' }}>
+          {Object.values(todos).map((todo) => {
             const labelId = `checkbox-list-label-${todo._id}`;
 
             return (
@@ -146,23 +153,25 @@ const Sidebar = () => {
                     edge="end"
                     aria-label="comments"
                     onClick={async () => {
-                      setTodosToDelete(curTodosToDelete => {
+                      setTodosToDelete((curTodosToDelete) => {
                         const newTodosToDelete = new Set(curTodosToDelete);
                         newTodosToDelete.add(todo._id);
                         return newTodosToDelete;
                       });
-                      await deleteTodo({_id: todo._id});
-                      setTodosToDelete(curTodosToDelete => {
+                      await deleteTodo({ _id: todo._id });
+                      setTodosToDelete((curTodosToDelete) => {
                         const newTodosToDelete = new Set(curTodosToDelete);
                         newTodosToDelete.delete(todo._id);
                         return newTodosToDelete;
                       });
                     }}
-                    disabled={todosToDelete.has(todo._id)}>
+                    disabled={todosToDelete.has(todo._id)}
+                  >
                     <DeleteIcon />
                   </IconButton>
                 }
-                disablePadding>
+                disablePadding
+              >
                 <ListItemButton role={undefined} dense>
                   <ListItemIcon>
                     <Checkbox
@@ -170,7 +179,7 @@ const Sidebar = () => {
                       checked={todo.isComplete}
                       tabIndex={-1}
                       disableRipple
-                      inputProps={{'aria-labelledby': labelId}}
+                      inputProps={{ 'aria-labelledby': labelId }}
                       onClick={handleToggle(todo)}
                     />
                   </ListItemIcon>
@@ -181,7 +190,7 @@ const Sidebar = () => {
           })}
         </List>
       </Box>
-    </Drawer>
+    </Container>
   );
 };
 

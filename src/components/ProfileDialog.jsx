@@ -18,6 +18,7 @@ import PhotoCameraIcon from '@mui/icons-material/PhotoCamera';
 import { useTheme } from '@mui/material/styles';
 import { useDispatch, useSelector } from 'react-redux';
 import { toggleProfileDialog } from '../features/misc/dialogs';
+import { selectCurrentUser } from '../features/auth/authSlice';
 
 const ProfileDialog = () => {
   const dispatch = useDispatch();
@@ -30,14 +31,7 @@ const ProfileDialog = () => {
     dispatch(toggleProfileDialog());
   };
 
-  const user = {
-    avatar: 'https://source.unsplash.com/random',
-    email: 'siriwatk@test.com',
-    familyName: 'Kkjhdb',
-    givenName: 'Siriwat',
-    username: 'siriwatk',
-  };
-
+  const user = useSelector(selectCurrentUser);
   const [formData, setFormData] = useState({
     givenName: user.givenName,
     familyName: user.familyName,
@@ -141,7 +135,10 @@ const ProfileDialog = () => {
                   src={formData.avatar || user.avatar}
                 />
                 {isEditing && (
-                  <Tooltip title="Edit">
+                  <Tooltip
+                    title="Edit"
+                    sx={{ position: 'absolute', backgroundColor: '#000000' }}
+                  >
                     <IconButton
                       color="primary"
                       component="label"
